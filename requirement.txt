@@ -1,0 +1,4 @@
+flask
+flask_bcrypt
+requests
+bs4
