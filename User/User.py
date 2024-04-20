@@ -20,6 +20,49 @@ def create_table():
     finally:
         conn.close()
 
+# create a new table for the subscription
+def create_subciption_tabse():
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS subscription (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            subscription_plan TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+                  )''')
+        conn.commit()
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
+
+
+# get the subscription by api key
+def get_subscription_plan(api_key):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE api_key =?", (api_key,))
+        result = c.fetchone()
+        if result is None:
+            conn.close()
+            return False
+        elif result:
+            # check the subcription table where users id is user_id in the table and get the subcription
+            c.execute("SELECT subscription_plan FROM subscription WHERE user_id =?", (result[0],))
+            subscription = c.fetchone()
+            if result:
+                conn.close()
+                return subscription
+            else:
+                conn.close()
+                return False
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
+
 def insert_user(fullname, username, password, user_email, api_key):
     try:
         conn = sqlite3.connect('database.db')
@@ -47,6 +90,7 @@ def get_api_key(username):
             return False, False
     except sqlite3.Error as e:
         print(e)
+
 
 def authenticate_api_key(api_key):
     try:

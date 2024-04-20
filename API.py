@@ -11,11 +11,10 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 # create the database
 User.create_table()
+# create the subcription table
+User.create_subciption_tabse()
 
-API_KEYS = {
-    "username": "Hasiru",
-    "api_key": "adflj32ojrkwrb23lfs32jks"
-}
+
 # check the database if the api key is valid
 def authenticate_api_key(api_key):
     return User.authenticate_api_key(api_key)
@@ -33,6 +32,25 @@ def require_api_key(func):
         return func(*args, **kwargs)
     wrapper.__name__ = func.__name__
     return wrapper
+
+# limit the number of requests per day acording to the subscription they using 
+def subscription_requiere(func):
+    def wrapper(*args, **kwargs):
+        api_key = request.headers.get("X-API-KEY")
+        isVaild = authenticate_api_key(api_key)
+        if isVaild:
+            # get the subscription plan from the subscription table
+            subscription_plan = User.get_subscription_plan(api_key)
+            if subscription_plan:
+                return func(*args, **kwargs)
+            else:
+                return jsonify({'authenticated': False,
+                                'help': 'you are not subscribed yet'}), 401
+        return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
+    
+
 
 # register a new user
 @app.route('/register', methods=['POST'])
@@ -88,6 +106,7 @@ def authenticate():
 # protected route
 @app.route('/get-data/<id>', methods=['GET'])
 @require_api_key
+@subscription_requiere
 def get_the_text(id):
     with open('test.txt', 'r') as f:
         data = f.read(int(id))
