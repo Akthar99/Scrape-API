@@ -63,13 +63,35 @@ def get_subscription_plan(api_key):
     finally:
         conn.close()
 
-def insert_user(fullname, username, password, user_email, api_key):
+# get the id of the user from username 
+def get_user_id(username):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE username =?", (username,))
+        result = c.fetchone()
+        if result:
+            conn.close()
+            return result[0]
+        else:
+            conn.close()
+            return False
+    except sqlite3.Error as e:
+        print(e)
+
+# create a new user 
+def insert_user(fullname, username, password, user_email, api_key, subscription_plan):
     try:
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
         c.execute("INSERT INTO users (fullname, username, password, user_email, api_key) VALUES (?,?,?,?,?)",
                 (fullname, username, password, user_email, api_key))
         conn.commit()
+        user_id = get_user_id(username=username)
+        c.execute("INSERT INTO subscription (user_id, subscription_plan) VALUES (?,?)",
+                (user_id, subscription_plan))
+        conn.commit()
+        conn.close()
     except sqlite3.Error as e:
         print(e)
     finally:

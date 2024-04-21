@@ -80,7 +80,8 @@ def register():
             User.insert_user(username=username, fullname=full_name,
                              password=bcrypt.generate_password_hash(password).decode('utf-8'),
                              user_email=user_email,
-                             api_key=decode_api_key)
+                             api_key=decode_api_key,
+                             subscription_plan='free')
             return jsonify({'authenticated': True}), 200
         
 
