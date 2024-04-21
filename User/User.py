@@ -11,7 +11,8 @@ def create_table():
             username TEXT,
             password TEXT,
             user_email TEXT,
-            api_key TEXT
+            api_key TEXT,
+            date DATETIME DEFAULT CURRENT_TIMESTAMP
                 )''')
 
         conn.commit()
@@ -29,6 +30,7 @@ def create_subciption_tabse():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             subscription_plan TEXT,
+            request INTEGER DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES users(id)
                   )''')
         conn.commit()
@@ -73,6 +75,23 @@ def get_user_id(username):
         if result:
             conn.close()
             return result[0]
+        else:
+            conn.close()
+            return False
+    except sqlite3.Error as e:
+        print(e)
+
+# get the username by api key
+
+def get_username_by_api_key(api_key):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE api_key =?", (api_key,))
+        result = c.fetchone()
+        if result:
+            conn.close()
+            return result[2]
         else:
             conn.close()
             return False
@@ -147,4 +166,61 @@ def check_user(username):
         print("An error occurred while checking user:", e)
         return None  # Returning None in case of an error
 
+# Check if the 24 hours have passed since
 
+def get_date_by_username_or_api_key(api_key=None, username=None):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT date FROM users WHERE username =? OR api_key =?", (username, api_key))
+        result = c.fetchone()
+        conn.close()
+        if result:
+            return result[0]  # Returning the username if found
+        else:
+            return None  # Returning None if username doesn't exist
+    except sqlite3.Error as e:
+        print("An error occurred while checking user:", e)
+        return None  # Returning None in case of an error
+
+def update_date_by_username_or_api_key(username=None, api_key=None):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("UPDATE users SET date = CURRENT_TIMESTAMP WHERE username =? OR api_key =?", (username, api_key))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print("An error occurred while checking user:", e)
+        return None  # Returning None in case of an error
+
+def get_request_by_api_key(api_key=None, username=None):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE username =? OR api_key =?", (username, api_key))
+        id_ = c.fetchone()
+        c.execute("SELECT request FROM subscription WHERE user_id =?", (id_[0],))
+        request = c.fetchone()
+        conn.close()
+        if request:
+            return request[0]  # Returning the request if found
+        else:
+            return None  # Returning None if request doesn't exist
+    except sqlite3.Error as e:
+        print("An error occurred while checking user:", e)
+        return None  # Returning None in case of an error
+
+# update the request by api_key
+def update_request_by_api_key(api_key):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE api_key =?", (api_key,))
+        id_ = c.fetchone()
+        c.execute("UPDATE subscription SET request = request + 1 WHERE user_id = ?", (id_[0],))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print("An error occurred while checking user:", e)
+        return None  # Returning None in case of an error

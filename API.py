@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 from User import User
 from cryptography.fernet import Fernet
 import base64
+import pandas as pd
+import time
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -33,7 +35,7 @@ def require_api_key(func):
     wrapper.__name__ = func.__name__
     return wrapper
 
-# limit the number of requests per day acording to the subscription they using 
+# check if the user is subscribed to the service
 def subscription_requiere(func):
     def wrapper(*args, **kwargs):
         api_key = request.headers.get("X-API-KEY")
@@ -50,7 +52,38 @@ def subscription_requiere(func):
     wrapper.__name__ = func.__name__
     return wrapper
     
-
+# limit the number of requests per day acording to the subscription they using 
+def subscription_limit(func):
+    def wrapper(*args, **kwargs):
+        api_key = request.headers.get("X-API-KEY")
+        isVaild = authenticate_api_key(api_key)
+        if isVaild:
+            # get the subscription plan from the subscription table
+            subscription_plan = User.get_subscription_plan(api_key)
+            if subscription_plan[0] == "free":
+                with open("free.csv", "a") as log_file:
+                    log_file.writelines(f"{User.get_username_by_api_key(api_key)},{str(request.remote_addr)},{time.ctime()} \n")
+                    log_file.close()
+                # check if the 24 hour is passed in
+                date = User.get_date_by_username_or_api_key(api_key)
+                timestamp = time.mktime(time.strptime(date, "%Y-%m-%d %H:%M:%S"))
+                time_deference = time.time() - timestamp
+                requests_ = User.get_request_by_api_key(api_key)
+                if date:
+                    if time_deference >= 86400:
+                        User.update_date_by_username_or_api_key(api_key)
+                    elif requests_ >= 10:
+                        return jsonify({'authenticated': False,
+                                    'help': 'your request per day is over! please subscribe to other subscription plan if you wants'}), 401
+                    else:
+                        User.update_request_by_api_key(api_key)
+                        return func(*args, **kwargs)
+            else:
+                return jsonify({'authenticated': False,
+                                'help': 'your request per day is over! please subscribe to other subscription plan if you wants'}), 401
+        return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
 
 # register a new user
 @app.route('/register', methods=['POST'])
@@ -108,6 +141,7 @@ def authenticate():
 @app.route('/get-data/<id>', methods=['GET'])
 @require_api_key
 @subscription_requiere
+@subscription_limit
 def get_the_text(id):
     with open('test.txt', 'r') as f:
         data = f.read(int(id))
@@ -117,6 +151,7 @@ def get_the_text(id):
 # protected route
 @app.route('/search', methods=['POST'])
 @require_api_key
+@subscription_limit
 def search():
     data = request.get_json()
     search_text = data['search_text']

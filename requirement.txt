@@ -2,3 +2,4 @@ flask
 flask_bcrypt
 requests
 bs4
+pandas
