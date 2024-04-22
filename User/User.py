@@ -12,7 +12,8 @@ def create_table():
             password TEXT,
             user_email TEXT,
             api_key TEXT,
-            date DATETIME DEFAULT CURRENT_TIMESTAMP
+            date DATETIME DEFAULT CURRENT_TIMESTAMP,
+            card TEXT
                 )''')
 
         conn.commit()
@@ -39,9 +40,29 @@ def create_subciption_tabse():
     finally:
         conn.close()
 
+def create_card_information_table():
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS card_information (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            card_name TEXT,
+            card_number TEXT,
+            expiry_month TEXT,
+            expiry_year TEXT,
+            card_cvv TEXT,
+            card_type TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+                  )''')
+        conn.commit()
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
 
 # get the subscription by api key
-def get_subscription_plan(api_key):
+def get_subscription_plan_(api_key):
     try:
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
@@ -224,3 +245,82 @@ def update_request_by_api_key(api_key):
     except sqlite3.Error as e:
         print("An error occurred while checking user:", e)
         return None  # Returning None in case of an error
+
+# reset the request by api key
+def reset_request_by_api_key(api_key):
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE api_key =?", (api_key,))
+        id_ = c.fetchone()
+        c.execute("UPDATE subscription SET request = 0 WHERE user_id = ?", (id_[0],))
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print("An error occurred while checking user:", e)
+
+# get and insert card information to the databse 
+def get_card(api_key):
+    """return the card information from the database by api key"""
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE api_key =?", (api_key,))
+        id_ = c.fetchone()
+        if id_:
+            c.execute("SELECT * FROM card_information WHERE user_id =?", (id_[0],))
+            result = c.fetchone()
+            if result:
+                conn.close()
+                return result
+            else:
+                conn.close()
+                return False
+        else:
+            conn.close()
+            return False
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
+
+# insert the information to the card_information table 
+
+def insert_card(api_key, card_name, card_number, expiry_month, expiry_year, card_cvv, card_type):
+    """
+    Insert card information to the card_information table
+    """
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE api_key =?", (api_key,))
+        id_ = c.fetchone()
+        if id_:
+            c.execute("""INSERT INTO card_information (user_id, card_name, card_number, expiry_month,
+                      expiry_year, card_cvv, card_type) VALUES (?,?,?,?,?,?,?)""",
+                    (id_[0], card_name, card_number, expiry_month, expiry_year, card_cvv, card_type))
+            conn.commit()
+            conn.close()
+            return True
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
+
+def check_card(card_number, user_id):
+    """check if the card number is aleady available in the database"""
+    try:
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("SELECT user_id FROM card_information WHERE card_number =? or user_id =?", (card_number, user_id))
+        result = c.fetchone()
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(e)
+
+
+get_card.__doc__ = """return the card information from the database by api key"""
