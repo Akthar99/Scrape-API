@@ -3,7 +3,7 @@ scrape API makes web scraping much easier for you
 
 ## Table of Contents
 
-[Introduction](#introduction)
+- [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
