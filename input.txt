@@ -1,0 +1,383 @@
+GWENDOLYN STRIPLING: Hello.
+00:01
+And welcome to Introduction to Generative AI.
+00:04
+My name is Dr. Gwendolyn Stripling.
+00:06
+And I am the artificial intelligence technical curriculum developer here at Google Cloud.
+00:14
+In this course, you learn to define generative AI, explain how generative AI works, describe generative AI model types, and describe generative AI applications.
+00:28
+Generative AI is a type of artificial intelligence technology that can produce various types of content, including text, imagery, audio, and synthetic data.
+00:41
+But what is artificial intelligence?
+00:44
+Well, since we are going to explore generative artificial intelligence, let's provide a bit of context.
+00:51
+So two very common questions asked are what is artificial intelligence and what is the difference between AI and machine learning.
+01:01
+One way to think about it is that AI is a discipline, like physics for example.
+01:08
+AI is a branch of computer science that deals with the creation of intelligence agents, which are systems that can reason, and learn, and act autonomously.
+01:20
+Essentially, AI has to do with the theory and methods to build machines that think and act like humans.
+01:30
+In this discipline, we have machine learning, which is a subfield of AI.
+01:35
+It is a program or system that trains a model from input data.
+01:40
+That trained model can make useful predictions from new or never before seen data drawn from the same one used to train the model.
+01:49
+Machine learning gives the computer the ability to learn without explicit programming.
+01:56
+Two of the most common classes of machine learning models are unsupervised and supervised ML models.
+02:03
+The key difference between the two is that, with supervised models, we have labels.
+02:09
+Labeled data is data that comes with a tag like a name, a type, or a number.
+02:16
+Unlabeled data is data that comes with no tag.
+02:20
+This graph is an example of the problem that a supervised model might try to solve.
+02:26
+For example, let's say you are the owner of a restaurant.
+02:29
+You have historical data of the bill amount and how much different people tipped based on order type and whether it was picked up or delivered.
+02:39
+In supervised learning, the model learns from past examples to predict future values, in this case tips.
+02:47
+So here the model uses the total bill amount to predict the future tip amount based on whether an order was picked up or delivered.
+02:57
+This is an example of the problem that an unsupervised model might try to solve.
+03:02
+So here you want to look at tenure and income and then group or cluster employees to see whether someone is on the fast track.
+03:11
+Unsupervised problems are all about discovery, about looking at the raw data and seeing if it naturally falls into groups.
+03:21
+Let's get a little deeper and show this graphically as understanding these concepts are the foundation for your understanding of generative AI.
+03:31
+In supervised learning, testing data values or x are input into the model.
+03:37
+The model outputs a prediction and compares that prediction to the training data used to train the model.
+03:45
+If the predicted test data values and actual training data values are far apart, that's called error.
+03:54
+And the model tries to reduce this error until the predicted and actual values are closer together.
+04:01
+This is a classic optimization problem.
+04:05
+Now that we've explored the difference between artificial intelligence and machine learning, and supervised and
+04:11
+unsupervised learning, let's briefly explore where deep learning fits as a subset of machine learning methods.
+04:20
+While machine learning is a broad field that encompasses many different techniques, deep learning is a type
+04:25
+of machine learning that uses artificial neural networks, allowing them to process more complex patterns than machine learning.
+04:34
+Artificial neural networks are inspired by the human brain.
+04:37
+They are made up of many interconnected nodes or neurons that can learn to perform tasks by processing data and making predictions.
+04:47
+Deep learning models typically have many layers of neurons, which allows them to learn more complex patterns than traditional machine learning models.
+04:56
+And neural networks can use both labeled and unlabeled data.
+05:00
+This is called semi-supervised learning.
+05:03
+In semi-supervised learning, a neural network is trained on a small amount of labeled data and a large amount of unlabeled data.
+05:12
+The labeled data helps the neural network to learn the basic concepts of the task while the unlabeled data helps the neural network to generalize to new examples.
+05:24
+Now we finally get to where generative AI fits into this AI discipline.
+05:30
+Gen AI is a subset of deep learning, which means it uses artificial neural networks, can process both labeled and unlabeled data using supervised, unsupervised, and semi-supervised methods.
+05:45
+Large language models are also a subset of deep learning.
+05:51
+Deep learning models, or machine learning models in general, can be divided into two types, generative and discriminative.
+05:59
+A discriminative model is a type of model that is used to classify or predict labels for data points.
+06:06
+Discriminative models are typically trained on a data set of labeled data points.
+06:10
+And they learn the relationship between the features of the data points and the labels.
+06:17
+Once a discriminative model is trained, it can be used to predict the label for new data points.
+06:25
+A generative model generates new data instances based on a learned probability distribution of existing data.
+06:33
+Thus generative models generate new content.
+06:38
+Take this example here.
+06:40
+The discriminative model learns the conditional probability distribution or the probability of y, our output, given x,
+06:46
+our input, that this is a dog and classifies it as a dog and not a cat.
+06:54
+The generative model learns the joint probability distribution or the probability of x and y and predicts
+07:02
+the conditional probability that this is a dog and can then generate a picture of a dog.
+07:09
+So to summarize, generative models can generate new data instances while discriminative models discriminate between different kinds of data instances.
+07:21
+The top image shows a traditional machine learning model which attempts to learn the relationship between the data and the label, or what you want to predict.
+07:30
+The bottom image shows a generative AI model which attempts to learn patterns on content so that it can generate new content.
+07:40
+A good way to distinguish what is gen AI and what is not is shown in this illustration.
+07:46
+It is not gen AI when the output, or y, or label is a number or a class, for example spam or not spam, or a probability.
+07:57
+It is gen AI when the output is natural language, like speech or text, an image or audio, for example.
+08:08
+Visualizing this mathematically would look like this.
+08:12
+If you haven't seen this for a while, the y is equal to f of x equation calculates the dependent output of a process given different inputs.
+08:23
+The y stands for the model output.
+08:25
+The f embodies the function used in the calculation.
+08:29
+And the x represents the input or inputs used for the formula.
+08:33
+So the model output is a function of all the inputs.
+08:36
+If the y is the number, like predicted sales, it is not gen AI.
+08:43
+If y is a sentence, like define sales, it is generative as the question would elicit a text response.
+08:51
+The response would be based on all the massive large data the model was already trained on.
+08:59
+To summarize at a high level, the traditional, classical supervised and unsupervised learning process takes training code and label data to build a model.
+09:09
+Depending on the use case or problem, the model can give you a prediction.
+09:15
+It can classify something or cluster something.
+09:18
+We use this example to show you how much more robust the gen AI process is.
+09:25
+The gen AI process can take training code, label data, and unlabeled data of all data types and build a foundation model.
+09:33
+The foundation model can then generate new content.
+09:36
+For example, text, code, images, audio, video, et cetera.
+09:42
+We've come a long away from traditional programming to neural networks to generative models.
+09:48
+In traditional programming, we used to have to hard code the rules for distinguishing a
+09:52
+cat-- the type, animal; legs, four; ears, two; fur, yes; likes yarn and catnip. In the
+10:03
+wave of neural networks, we could give the network pictures of cats and dogs and ask
+10:07
+is this a cat and it would predict a cat. In the generative wave, we as
+10:14
+users can generate our own content, whether it be text, images, audio, video, et cetera, for
+10:21
+example models like PaLM or Pathways Language Model, or LaMDA, Language Model for Dialogue Applications, ingest
+10:30
+very, very large data from the multiple sources across the internet and build foundation language models
+10:36
+we can use simply by asking a question, whether typing it into a prompt or verbally
+10:43
+talking into the prompt itself. So when you ask it what's a cat, it can give
+10:48
+you everything it has learned about a cat. Now we come to our formal definition. What
+10:55
+is generative AI? Gen AI is a type of artificial intelligence that creates new content based
+11:00
+on what it has learned from existing content. The process of learning from existing content is
+11:07
+called training and results in the creation of a statistical model when given a prompt. AI
+11:13
+uses the model to predict what an expected response might be and this generates new content.
+11:21
+Essentially, it learns the underlying structure of the data and can then generate new samples that
+11:27
+are similar to the data it was trained on. As previously mentioned, a generative language model
+11:35
+can take what it has learned from the examples it's been shown and create something entirely
+11:40
+new based on that information. Large language models are one type of generative AI since they
+11:48
+generate novel combinations of text in the form of natural sounding language. A generative image model
+11:56
+takes an image as input and can output text, another image, or video. For example, under
+12:04
+the output text, you can get visual question answering while under output image, an image completion
+12:12
+is generated. And under output video, animation is generated. A generative language model takes text as
+12:21
+input and can output more text, an image, audio, or decisions. For example, under the output
+12:28
+text, question answering is generated. And under output image, a video is generated. We've stated that
+12:36
+generative language models learn about patterns and language through training data, then, given some text, they
+12:43
+predict what comes next. Thus generative language models are pattern matching systems. They learn about patterns
+12:51
+based on the data you provide. Here is an example. Based on things it's learned from
+12:58
+its training data, it offers predictions of how to complete this sentence, I'm making a sandwich
+13:05
+with peanut butter and jelly. Here is the same example using Bard, which is trained on
+13:12
+a massive amount of text data and is able to communicate and generate humanlike text in
+13:17
+response to a wide range of prompts and questions. Here is another example. The meaning of
+13:26
+life is-- and Bart gives you a contextual answer and then shows the highest probability response.
+13:35
+The power of generative AI comes from the use of transformers.
+13:40
+Transformers produced a 2018 revolution in natural language processing.
+13:45
+At a high level, a transformer model consists of an encoder and decoder.
+13:50
+The encoder encodes the input sequence and passes it to the decoder, which learns how to decode the representation for a relevant task.
+14:01
+In transformers, hallucinations are words or phrases that are generated by the model that are often nonsensical or grammatically incorrect.
+14:13
+Hallucinations can be caused by a number of factors, including the model is not trained on enough data, or the model is
+14:22
+trained on noisy or dirty data, or the model is not given enough context, or the model is not given enough constraints.
+14:33
+Hallucinations can be a problem for transformers because they can make the output text difficult to understand.
+14:40
+They can also make the model more likely to generate incorrect or misleading information.
+14:46
+A prompt is a short piece of text that is given to the large language model as input.
+14:53
+And it can be used to control the output of the model in a variety of ways.
+14:59
+Prompt design is the process of creating a prompt that will generate the desired output from a large language model.
+15:07
+As previously mentioned, gen AI depends a lot on the training data that you have fed into it.
+15:14
+And it analyzes the patterns and structures of the input data and thus learns.
+15:20
+But with access to a browser based prompt, you, the user, can generate your own content.
+15:27
+We've shown illustrations of the types of input based upon data.
+15:31
+Here are the associated model types.
+15:33
+Text-to-text.
+15:35
+Text-to-text models take a natural language input and produces a text output.
+15:40
+These models are trained to learn the mapping between a pair of text, e.g. for example, translation from one language to another.
+15:49
+Text-to-image.
+15:50
+Text-to-image models are trained on a large set of images, each captioned with a short text description.
+15:58
+Diffusion is one method used to achieve this.
+16:01
+Text-to-video and text-to-3D.
+16:04
+Text-to-video models aim to generate a video representation from text input.
+16:09
+The input text can be anything from a single sentence to a full script.
+16:15
+And the output is a video that corresponds to the input text.
+16:20
+Similarly, text-to-3D models generate three dimensional objects that correspond to a user's text description.
+16:29
+For example, this can be used in games or other 3D worlds.
+16:34
+Text-to-task.
+16:36
+Text-to-task models are trained to perform a defined task or action based on text input.
+16:44
+This task can be a wide range of actions such as answering a question, performing a search, making a prediction, or taking some sort of action.
+16:55
+For example, a text-to-task model could be trained to navigate a web UI or make changes to a doc through the GUI.
+17:05
+A foundation model is a large AI model pre-trained on a vast quantity of data designed to be adapted
+17:11
+or fine tuned to a wide range of downstream tasks, such as sentiment analysis, image captioning, and object recognition.
+17:23
+Foundation models have the potential to revolutionize many industries, including health care, finance, and customer service.
+17:32
+They can be used to detect fraud and provide personalized customer support.
+17:38
+Vertex AI offers a model garden that includes foundation models.
+17:43
+The language foundation models include PaLM API for chat and text.
+17:48
+The vision foundation models includes stable diffusion, which has been shown to be effective at generating high quality images from text descriptions.
+18:00
+Let's say you have a use case where you need to gather sentiments about how your customers are feeling about your product or service.
+18:07
+You can use the classification task sentiment analysis task model for just that purpose.
+18:15
+And what if you needed to perform occupancy analytics?
+18:19
+There is a task model for your use case.
+18:23
+Shown here are gen AI applications.
+18:27
+Let's look at an example of code generation shown in the second block under code at the top.
+18:34
+In this example, I've input a code file conversion problem, converting from Python to JSON.
+18:41
+I use Bard.
+18:42
+And I insert into the prompt box the following.
+18:46
+I have a Pandas DataFrame with two columns, one with the file name and one with the hour in which it is generated.
+18:54
+I'm trying to convert this into a JSON file in the format shown onscreen.
+19:00
+Bard returns the steps I need to do this and the code snippet.
+19:06
+And here my output is in a JSON format.
+19:10
+It gets better.
+19:11
+I happen to be using Google's free, browser-based Jupyter Notebook, known as Colab.
+19:18
+And I simply export the Python code to Google's Colab.
+19:23
+To summarize, Bart code generation can help you debug your lines of source code, explain your code to you line by
+19:30
+line, craft SQL queries for your database, translate code from one language to another, and generate documentation and tutorials for source code.
+19:42
+Generative AI Studio lets you quickly explore and customize gen AI models that you can leverage in your applications on Google Cloud.
+19:53
+Generative AI Studio helps developers create and deploy Gen AI models by providing a variety of tools and resources that make it easy to get started.
+20:05
+For example, there's a library of pre-trained models.
+20:09
+There is a tool for fine tuning models.
+20:12
+There is a tool for deploying models to production.
+20:15
+And there is a community forum for developers to share ideas and collaborate.
+20:21
+Generative AI App Builder lets you create gen AI apps without having to write any code.
+20:28
+Gen AI App Builder has a drag and drop interface that makes it easy to design and build apps.
+20:35
+It has a visual editor that makes it easy to create and edit app content.
+20:39
+It has a built-in search engine that allows users to search for information within the app.
+20:43
+And it has a conversational AI Engine that helps users to interact with the app using natural language.
+20:51
+You can create your own digital assistants, custom search engines, knowledge bases, training applications, and much more.
+21:01
+PaLM API lets you test and experiment with Google's large language models and gen AI tools.
+21:09
+To make prototyping quick and more accessible, developers can integrate PaLM API with Maker suite and use it to access the API using a graphical user interface.
+21:21
+The suite includes a number of different tools such as a model training tool, a model deployment tool, and a model monitoring tool.
+21:31
+The model training tool helps developers train ML models on their data using different algorithms.
+21:38
+The model deployment tool helps developers deploy ML models to production with a number of different deployment options.
+21:48
+The model monitoring tool helps developers monitor the performance of their ML models in production using a dashboard and a number of different metrics.
+22:01
+Thank you for watching our course, Introduction to Generative AI.
