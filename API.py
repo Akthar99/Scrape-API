@@ -177,28 +177,37 @@ def authenticate():
 
 
 # get the subscription plan information 
-@app.route('/get-subscription-plan', methods=['GET'])
+@app.route('/get-subscription-plan', methods=['GET', 'PUT'])
 @require_api_key
 def get_subscription_plan():
     api_key = request.headers.get("X-API-KEY")
     isVaild = authenticate_api_key(api_key)
-    if isVaild:
-        subscription_plan = User.get_subscription_plan_(api_key)
-        if subscription_plan[0] == "free":
-            return jsonify({'subscription_plan': subscription_plan[0],
-                            'information': [
-                                '10 request per day',
-                            ]}), 200
-        elif subscription_plan[0] == "max lite":
-            return jsonify({'subscription_plan': subscription_plan[0],
-                            'information': [
-                                '100 request per day',
-                            ]}), 200
-        elif subscription_plan[0] == "max":
-            return jsonify({'subscription_plan': subscription_plan[0],
-                            'information': [
-                                '10000 request per day',
-                            ]}), 200
+    if request.method == "GET":
+        if isVaild:
+            subscription_plan = User.get_subscription_plan_(api_key)
+            if subscription_plan[0] == "free":
+                return jsonify({'subscription_plan': subscription_plan[0],
+                                'information': [
+                                    '10 request per day',
+                                ]}), 200
+            elif subscription_plan[0] == "max lite":
+                return jsonify({'subscription_plan': subscription_plan[0],
+                                'information': [
+                                    '100 request per day',
+                                ]}), 200
+            elif subscription_plan[0] == "max":
+                return jsonify({'subscription_plan': subscription_plan[0],
+                                'information': [
+                                    '10000 request per day',
+                                ]}), 200
+        if request.method == "PUT":
+            """update subscription plan information"""
+            if isVaild:
+                data = request.get_json()
+                subscription_plan = data['subscription_plan']
+                User.update_subscription_plan(api_key=api_key, subscription_plan=subscription_plan)
+                return jsonify({'subscription_plan': subscription_plan}), 200
+
 
 # get the card information from the user
 @app.route("/card-information", methods=["GET", "POST"])
