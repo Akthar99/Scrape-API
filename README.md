@@ -1,5 +1,4 @@
-# Project Name
-
+# Scrape API
 scrape API makes web scraping much easier for you
 
 ## Table of Contents
