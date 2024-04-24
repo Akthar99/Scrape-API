@@ -32,6 +32,7 @@ def create_subciption_tabse():
             user_id INTEGER,
             subscription_plan TEXT,
             request INTEGER DEFAULT 0,
+            monthly_bill INTEGER DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES users(id)
                   )''')
         conn.commit()
@@ -322,5 +323,43 @@ def check_card(card_number, user_id):
     except sqlite3.Error as e:
         print(e)
 
+def update_subscription_plan(api_key, subscription_plan):
+    """update the subscription plan"""
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE api_key =?", (api_key,))
+        id_ = c.fetchone()
+        if id_:
+            c.execute("UPDATE subscription SET subscription_plan =? WHERE user_id =?", (subscription_plan, id_[0]))
+            conn.commit()
+            conn.close()
+            return True
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
+
+def add_monthly_bill(api_key, payment):
+    """add the monthly bill to the database"""
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE api_key =?", (api_key,))
+        id_ = c.fetchone()
+        if id_:
+            c.execute("SELECT monthly_bill FROM subscription WHERE user_id =?", (id_[0],))
+            paid = c.fetchone()
+            if paid[0] == 0:
+                c.execute("UPDATE subscription SET monthly_bill =? WHERE user_id =?", (payment, id_[0]))
+                conn.commit()
+                conn.close()
+                return True
+            else:
+                return False
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        conn.close()
 
 get_card.__doc__ = """return the card information from the database by api key"""

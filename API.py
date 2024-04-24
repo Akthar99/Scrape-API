@@ -200,14 +200,45 @@ def get_subscription_plan():
                                 'information': [
                                     '10000 request per day',
                                 ]}), 200
-        if request.method == "PUT":
-            """update subscription plan information"""
-            if isVaild:
-                data = request.get_json()
-                subscription_plan = data['subscription_plan']
-                User.update_subscription_plan(api_key=api_key, subscription_plan=subscription_plan)
-                return jsonify({'subscription_plan': subscription_plan}), 200
-
+    if request.method == "PUT":
+        """update subscription plan information"""
+        if isVaild:
+            data = request.get_json()
+            subscription_plan = data['subscription_plan']
+            if subscription_plan not in ["free", "max lite", "max"]:
+                return jsonify({
+                    "subscription": "faild",
+                    "help": "subscription plan is invaild" 
+                }), 400
+            card = User.get_card(api_key)
+            if card:
+                if subscription_plan == "free":
+                    payment = 0
+                elif subscription_plan == "max lite":
+                    payment = 3
+                elif subscription_plan == "max":
+                    payment = 10
+                paid = User.add_monthly_bill(api_key=api_key
+                                             , payment=payment)
+                print(subscription_plan)
+                print(paid)
+                print(payment)
+                if paid != False and paid != None:
+                    User.update_subscription_plan(api_key=api_key, subscription_plan=subscription_plan)
+                    return jsonify({'subscription_plan': subscription_plan,
+                                    'update': True}), 200
+                else:
+                    return jsonify({
+                        "subscription": "faild",
+                        "help": "your card is not beed cleared" 
+                    }), 401
+            else:
+                return jsonify({
+                    "subscription": "faild",
+                    "help": "you have not registered your card information" 
+                }), 401
+        return jsonify({'subscription_plan': "something happend bad"}), 200
+            
 
 # get the card information from the user
 @app.route("/card-information", methods=["GET", "POST"])
