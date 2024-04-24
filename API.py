@@ -8,6 +8,7 @@ from cryptography.fernet import Fernet
 import base64
 import pandas as pd
 import time
+import random
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -296,21 +297,28 @@ def search():
     data = request.get_json()
     search_text = data['search_text']
     pull = data['pull'] if 'pull' in data else 5
-
-    res = requests.get(f"https://en.wikipedia.org/w/index.php?title=Special:Search&limit={pull}&offset=0&ns0=1&search={search_text}")
+    proxy = open('proxy.txt', 'r').read().split('\n')
+    print(proxy[random.randint(0, 10)])
+    res = requests.get(f"https://en.wikipedia.org/w/index.php?title=Special:Search&limit={pull}&offset=0&ns0=1&search={search_text}",
+                        timeout=20)
     content = res.text
 
-    soup = BeautifulSoup(content, 'lxml')
+    soup = BeautifulSoup(content, 'html.parser')
     tags = soup.find_all('div', class_="searchresult")
     links = soup.find_all("a")
 
     results = []
+    search_urls = []
     for link in links:
         extracted_link = link.get("href")
         if extracted_link.startswith('http'):
             results.append(extracted_link)
+        elif extracted_link.startswith('/wiki'):
+            fixed_link = 'https://en.wikipedia.org/' + extracted_link
+            search_urls.append(fixed_link)
 
-    return jsonify({"links": results}), 200
+    return jsonify({"links": results,
+                    'search-links': search_urls}), 200
 
 
 if __name__ == '__main__':
