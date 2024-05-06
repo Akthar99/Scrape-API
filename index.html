@@ -1,52 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
 
-</head>
-<body>
-    <div id="head"> 
-        <h1>Wellcome to scrape API</h1>
-        <br>
-        <hr>
-        <div id="content-table">
-            <div id="about-icon">
-                <i><img width="30" height="30" src="https://img.icons8.com/pastel-glyph/30/FFFFFF/info--v3.png" alt="info--v3"/></i>
-                <a href="#about">About</a>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="homepage">
+      <div class="f-r-a-m-e-a-parent">
+        <header class="f-r-a-m-e-a">
+          <div class="head-background"></div>
+          <h1 class="scrape-api hidden">Scrape API</h1>
+        </header>
+        <div class="nav-bar">
+          <div class="navbar">
+            <div class="bar"></div>
+            <div class="about">
+              <div class="about-child"></div>
+              <div class="about1"><a href="#about">About</a></div>
             </div>
-            <div id="about-icon">
-                <i><img width="30" height="30" src="https://img.icons8.com/external-sbts2018-solid-sbts2018/30/FFFFFF/external-install-basic-ui-elements-2.3-sbts2018-solid-sbts2018.png" alt="external-install-basic-ui-elements-2.3-sbts2018-solid-sbts2018"/></i>
-                <a href="#install">install</a>
+            <div class="install">
+              <div class="install-child"></div>
+              <div class="install1"><a href="#install">Install</a></div>
             </div>
-            <div id="about-icon">
-                <i><img width="30" height="30" src="https://img.icons8.com/ios/30/FFFFFF/trial-version.png" alt="trial-version"/></i>
-                <a href="#demonstration">demonstration</a>
+            <div class="demonstration">
+              <div class="demonstration-child"></div>
+              <div class="demonstration1"><a href="#demonstration">Demonstration</a></div>
             </div>
-            <div id="about-icon">
-                <i><img width="30" height="30" src="https://img.icons8.com/external-others-nixx-design/30/FFFFFF/external-documentation-web-design-lineal-others-nixx-design.png" alt="external-documentation-web-design-lineal-others-nixx-design"/></i>
-                <a href="#documentation">documentation</a>
+            <div class="documentation">
+              <div class="documentation-child"></div>
+              <div class="documentation1"><a href="#documentation">Documentation</a></div>
             </div>
-
+          </div>
         </div>
+      </div>
+      <main class="homepage-inner hidden">
+        <section class="rectangle-parent">
+          <div class="frame-child"></div>
+          <div class="icon-github-outline-parent">
+            <img
+              class="icon-github-outline"
+              loading="lazy"
+              alt=""
+              src="./public/icon-github-outline.svg.png"
+            />
+
+            <div class="welcome-message">
+              <h1 class="welcome-to-scrape">
+                Welcome to Scrape API, the open-source Wikipedia scraping API
+                that empowers developers to easily access Wikipedia data.
+              </h1>
+            </div>
+          </div>
+          <div class="frame-wrapper hidden">
+            <div class="frame-parent">
+              <div class="frame-container">
+                <div class="rectangle-group">
+                  <div class="frame-item"></div>
+                  <img
+                    class="ec0dc6ac-0f52-4d71-a32b-98bf8f-icon"
+                    loading="lazy"
+                    alt=""
+                    src="./public/ec0dc6ac0f524d71a32b98bf8f0b7936-1@2x.png"
+                  />
+
+                  <div class="frame-group">
+                    <div class="who-am-i-wrapper">
+                      <h1 class="who-am-i">Who am I ? ...</h1>
+                    </div>
+                    <div class="i-am-a">
+                      I am a undergraduate Software Engineer. Currently studding
+                      on National Institute of Business Management university.
+                      You can contact me on GitHub
+                    </div>
+                  </div>
+                  <div class="icon-facebook-squared-parent">
+                    <img
+                      class="icon-facebook-squared"
+                      loading="lazy"
+                      alt=""
+                      src="./public/-icon-facebook-squared.svg.png"
+                    />
+
+                    <img
+                      class="icon-instagram"
+                      loading="lazy"
+                      alt=""
+                      src="./public/-icon-instagram.svg.png"
+                    />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
-    <div id="about">
-        <div id="about-head">
-            <h1>About</h1>
-        </div>
-        <div id="about-content">
-            <div id="about-first-content">
-                <i><img width="20" height="20" src="https://img.icons8.com/ios/20/FA5252/api.png" alt="api"/></i>
-                <p>Imagine you have a tool that can fetch information from Wikipedia. Let's say you're interested in learning about JavaScript. With this tool, you can ask for information about JavaScript and specify how much information you want. Once you've made your request, the tool will gather data from Wikipedia and provide you with a response.
 
-                    The response will contain all the links related to the topic you asked about, such as different pages on Wikipedia that mention JavaScript. This way, you can easily explore more about the topic by following those links.
-                    
-                    
-                    </p>
-            </div>
-        </div>
-    </div>
-</body>
+
+    <script defer src="main.js"></script>
+  </body>
 </html>
