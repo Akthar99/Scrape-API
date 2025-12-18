@@ -16,3 +16,4 @@ dist
 API.spec
 index.html
 style.css
+./venv

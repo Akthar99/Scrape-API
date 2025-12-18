@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify
-from flask_bcrypt import Bcrypt
+from quart import Quart, request, jsonify
+from quart_bcrypt import Bcrypt
 import hashlib
 import requests
 from bs4 import BeautifulSoup
@@ -10,7 +10,7 @@ import pandas as pd
 import time
 import random
 
-app = Flask(__name__)
+app = Quart(__name__)
 bcrypt = Bcrypt(app)
 # create the database
 User.create_table()

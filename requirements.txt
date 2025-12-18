@@ -1,0 +1,6 @@
+Quart
+requests
+quart-bcrypt
+beautifulsoup4
+pandas
+cryptography
