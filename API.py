@@ -21,17 +21,17 @@ User.create_card_information_table()
 
 
 # check the database if the api key is valid
-def authenticate_api_key(api_key):
+async def authenticate_api_key(api_key):
     return User.authenticate_api_key(api_key)
 
 # decorator for authenticate_api_key 
 def require_api_key(func):
-    def wrapper(*args, **kwargs):
+    async def wrapper(*args, **kwargs):
         api_key = request.headers.get("X-API-KEY")
         if not api_key:
             return jsonify({'authenticated': False,
                             'help': 'not api-key found in your request you might want to register first'}), 401
-        elif not authenticate_api_key(api_key):
+        elif not await authenticate_api_key(api_key):
             return jsonify({'authenticated': False,
                             'help': 'api-key you suplied is wrong'}), 401
         return func(*args, **kwargs)
@@ -40,18 +40,18 @@ def require_api_key(func):
 
 # check if the user is subscribed to the service
 def subscription_requiere(func):
-    def wrapper(*args, **kwargs):
-        api_key = request.headers.get("X-API-KEY")
-        isVaild = authenticate_api_key(api_key)
+    async def wrapper(*args, **kwargs):
+        api_key = await request.headers.get("X-API-KEY")
+        isVaild = await authenticate_api_key(api_key)
         if isVaild:
             # get the subscription plan from the subscription table
             subscription_plan = User.get_subscription_plan_(api_key)
             if subscription_plan:
-                return func(*args, **kwargs)
+                return await func(*args, **kwargs)
             else:
                 return jsonify({'authenticated': False,
                                 'help': 'you are not subscribed yet'}), 401
-        return func(*args, **kwargs)
+        return await func(*args, **kwargs)
     wrapper.__name__ = func.__name__
     return wrapper
     
