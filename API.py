@@ -4,6 +4,7 @@ import hashlib
 import requests
 from bs4 import BeautifulSoup
 from User import User
+from Models.User.model import init_db, get_engine
 from cryptography.fernet import Fernet
 import base64
 import pandas as pd
@@ -12,12 +13,17 @@ import random
 
 app = Quart(__name__)
 bcrypt = Bcrypt(app)
-# create the database
-User.create_table()
-# create the subcription table
-User.create_subciption_tabse()
-# create the card information table
-User.create_card_information_table()
+
+engine: any
+
+# initialize the database 
+@app.before_serving
+async def startup():
+    await init_db()
+    global engine
+    engine = await get_engine() 
+
+
 
 
 # check the database if the api key is valid

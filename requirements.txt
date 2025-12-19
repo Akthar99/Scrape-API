@@ -4,3 +4,4 @@ quart-bcrypt
 beautifulsoup4
 pandas
 cryptography
+sqlalchemy[asyncio]
