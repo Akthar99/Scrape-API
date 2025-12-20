@@ -1,34 +1,47 @@
 from quart import Quart, request, jsonify
+from quart.json.provider import JSONProvider
 from quart_bcrypt import Bcrypt
 import hashlib
 import requests
 from bs4 import BeautifulSoup
 from User import User
-from Models.User.model import init_db, get_engine
+from Models.User.model import (get_async_session, 
+                               init_db, 
+                               get_engine,
+                               get_subscription_plan,
+                               authenticate_api_key
+                               )
 from cryptography.fernet import Fernet
 import base64
 import pandas as pd
 import time
 import random
+import orjson
+
+# use orjson for faster json serialization
+class ORJSONProvider(JSONProvider):
+    def dumps(self, obj, **kwargs):
+        return orjson.dumps(obj, option=orjson.OPT_NON_STR_KEYS | orjson.OPT_NAIVE_UTC).decode("utf-8")
+    
+    def loads(self, s, **kwargs):
+        return orjson.loads(s)
 
 app = Quart(__name__)
 bcrypt = Bcrypt(app)
 
-engine: any
+engine = None
+async_session = None
 
-# initialize the database 
+# initialize the database and async engine/session
 @app.before_serving
 async def startup():
+    global engine, async_session
+    engine = get_engine()
+    async_session = get_async_session(engine)
     await init_db()
-    global engine
-    engine = await get_engine() 
 
 
 
-
-# check the database if the api key is valid
-async def authenticate_api_key(api_key):
-    return User.authenticate_api_key(api_key)
 
 # decorator for authenticate_api_key 
 def require_api_key(func):
@@ -37,9 +50,9 @@ def require_api_key(func):
         if not api_key:
             return jsonify({'authenticated': False,
                             'help': 'not api-key found in your request you might want to register first'}), 401
-        elif not await authenticate_api_key(api_key):
-            return jsonify({'authenticated': False,
-                            'help': 'api-key you suplied is wrong'}), 401
+        elif not await authenticate_api_key(api_key, async_session):
+            return {'authenticated': False,
+                            'help': 'api-key you suplied is wrong'}, 401
         return func(*args, **kwargs)
     wrapper.__name__ = func.__name__
     return wrapper

@@ -5,3 +5,5 @@ beautifulsoup4
 pandas
 cryptography
 sqlalchemy[asyncio]
+aiosqlite
+orjson

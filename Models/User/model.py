@@ -1,6 +1,6 @@
 from __future__ import annotations
 from sqlalchemy import ForeignKey, func, Column, select
-from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, AsyncSession, create_async_engine, AsyncEngine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
 import asyncio
@@ -57,14 +57,33 @@ async def async_main():
 async def init_db():
     await async_main()
 
-async def get_engine():
-    engine = create_async_engine(DATABASE_URL, echo=True)
-    return engine
+def get_engine():
+    return create_async_engine(DATABASE_URL, echo=True)
 
-async def get_subscription_plan(api_key: str, session: AsyncSession) -> Subscription | None:
-    result = await session.execute(
-        select(Subscription).join(User).where(User.api_key == api_key)
-    )
-    return result.scalars().first()
+def get_async_session(engine: AsyncEngine):
+    return async_sessionmaker(engine, expire_on_commit=False)
 
-asyncio.run(async_main())
+async def get_subscription_plan(api_key: str, async_session: async_sessionmaker[AsyncSession]) -> str | None:
+    """
+    Retrieve the subscription plan for a user based on their API key.
+    @param api_key: The API key of the user.
+    @param session: The asynchronous database session.
+    @return: The subscription plan as a string, or None if not found.
+    """
+    async with async_session() as session:
+        result = await session.execute(
+            select(Subscription.subscription_plan).join(User).where(User.api_key == api_key)
+        )
+        return result.scalars().first()
+
+async def authenticate_api_key(api_key: str, async_session: async_sessionmaker[AsyncSession]) -> bool:
+    async with async_session() as session:
+        result = await session.execute(
+            select(User).where(User.api_key == api_key)
+        )
+        user = result.scalars().first()
+        return True if user is not None else False
+
+
+
+# asyncio.run(async_main())
